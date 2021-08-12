@@ -43,12 +43,11 @@ UserSchema.pre('save',function(next){
     }
 });
 
-UserSchema.methods.comparePassword=(password,cb)=>{
-    var user=this;
-    bcrypt.compare(password,user.password,(err,isMatch)=>{
-        if(err)return cb(err);
+UserSchema.methods.comparePassword=function(password,cb){
+    bcrypt.compare(password,this.password,function(err,isMatch){
+        if(err){return cb(err);}
         cb(null,isMatch);
     });
-}
+};
 
 module.exports=mongoose.model("User",UserSchema);
