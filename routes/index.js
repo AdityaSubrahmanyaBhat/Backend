@@ -15,12 +15,14 @@ router.get('/', (req, res) => {
 //     });
 // });
 
-router.post('/add',functions.add);
+router.put('/add',functions.add);
 
 router.get('/getTodos',functions.getTodos);
 
 router.post('/register',functions.register);
 
 router.post('/login',functions.login);
+
+router.delete('/delete',functions.delete);
 
 module.exports=router;

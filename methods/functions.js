@@ -3,21 +3,75 @@ var User = require('../models/user');
 var jwt=require('jwt-simple')
 
 var functions = {
+    // add: (req, res) => {
+    //     if (!req.body.title) {
+    //         res.status(400).json({ status: `400-Bad Request`, success: false, message: "Enter the title" });
+    //     } else {
+    //         var newTodo = Todo({
+    //             title: req.body.title,
+    //             description: req.body.description,
+    //         });
+    //         newTodo.save(function (err, todo) {
+    //             if (!err) {
+    //                 res.status(200).json({ status: "200 OK", success: true, message: "New todo added", });
+    //             } else {
+    //                 res.status(500).json({ status: "500-Internal server error", success: false, message: "Failed to save", });
+    //             }
+    //         });
+    //     }
+    // },
     add: (req, res) => {
         if (!req.body.title) {
             res.status(400).json({ status: `400-Bad Request`, success: false, message: "Enter the title" });
         } else {
             var newTodo = Todo({
                 title: req.body.title,
-                description: req.body.description,
+                description: req.body.description??"",
             });
-            newTodo.save(function (err, todo) {
-                if (!err) {
-                    res.status(200).json({ status: "200 OK", success: true, message: "New todo added", });
-                } else {
-                    res.status(500).json({ status: "500-Internal server error", success: false, message: "Failed to save", });
+            User.findOne({name:req.body.name},function(err,user){
+                if(!err){
+                    user.tasks.push(newTodo);
+                user.save(function(err,updatedUser){
+                    res.status(200).send(`${user}`);
+                });
+                }else{
+                    res.status(500).json({ status: "500-Internal server error", success: false, message: "Failed to update", });
                 }
             });
+            // newTodo.save(function (err, todo) {
+            //     if (!err) {
+            //         res.status(200).json({ status: "200 OK", success: true, message: "New todo added", });
+            //     } else {
+            //         res.status(500).json({ status: "500-Internal server error", success: false, message: "Failed to save", });
+            //     }
+            // });
+        }
+    },
+    delete:(req,res)=>{
+        if(!req.body.title||!req.body.uid){
+            res.status(400).send("400-Bad Request");
+        }else{
+            User.findOne({uid:req.body.uid},function(err,user){
+                if(!err){
+                    // for(var i=0;i<user.tasks.length;i++)
+                    // {
+                    //     if(user.tasks[i].title==req.body.title)
+                    //     {
+                    //         delete user.tasks[i];
+                    //     }
+                    // }
+                    var val=user.tasks.findIndex(function(element){
+                        element.title===req.body.title
+                    })
+                    //res.send(`${val}`)
+                    user.tasks.splice(val,1);
+                    user.save(function(err,updatedUser){
+                        res.status(200).send(`${user}`);
+                    });                    
+                }else{
+                    throw err;
+                }
+            }); 
         }
     },
     getTodos: (req, res) => {
