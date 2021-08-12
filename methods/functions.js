@@ -60,7 +60,7 @@ var functions = {
             else{
                 user.comparePassword(req.body.password,function(err,isMatch){
                     if(isMatch&&!err){
-                        var token=jwt.encode(user,config.secret);
+                        var token=jwt.encode(user,'secret');
                         res.json({success:true,message:"Success",token:token}); 
                      }
                      else{
