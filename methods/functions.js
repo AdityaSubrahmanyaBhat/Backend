@@ -28,7 +28,7 @@ var functions = {
             }
         });
     },
-    register: async(req, res) => {
+    register: (req, res) => {
         if(!req.body.name||!req.body.email||!req.body.password||!req.body.uid){
             res.status(400).send("Fields must not be empty");
         }else{
