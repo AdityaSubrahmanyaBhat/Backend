@@ -58,7 +58,7 @@ var functions = {
                 res.status(403).send({success:false,message:"User not found"});
             }
             else{
-                user.comparePassword(req.body.password,(err,isMatch)=>{
+                user.comparePassword(req.body.password,function(err,isMatch){
                     if(isMatch&&!err){
                         var token=jwt.encode(user,config.secret);
                         res.json({success:true,message:"Success",token:token}); 
