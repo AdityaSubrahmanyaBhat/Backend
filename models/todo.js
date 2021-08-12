@@ -11,6 +11,9 @@ var todoSchema=new Schema({
         type:String,
         required:false,
     },
+    taskId:{
+        type:String
+    },
 });
 
 module.exports=mongoose.model("Todo",todoSchema);

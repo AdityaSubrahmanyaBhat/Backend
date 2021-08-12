@@ -19,4 +19,8 @@ router.post('/add',functions.add);
 
 router.get('/getTodos',functions.getTodos);
 
+router.post('/register',functions.register);
+
+router.post('/login',functions.login);
+
 module.exports=router;
