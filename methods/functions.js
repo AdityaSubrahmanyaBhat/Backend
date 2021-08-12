@@ -40,7 +40,7 @@ var functions = {
                 tasks:[],
             });
             newUser.save((err,user)=>{
-                if(!err)return res.status(200).send("Created new user");
+                if(!err)return res.status(200).send(`Created new user - ${user}`);
                 else{
                     return res.status(500).send(`Failed to create new user ${err}`);
                 }
