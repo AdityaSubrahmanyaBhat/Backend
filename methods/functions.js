@@ -3,24 +3,10 @@ var User = require('../models/user');
 var jwt=require('jwt-simple')
 
 var functions = {
-    // add: (req, res) => {
-    //     if (!req.body.title) {
-    //         res.status(400).json({ status: `400-Bad Request`, success: false, message: "Enter the title" });
-    //     } else {
-    //         var newTodo = Todo({
-    //             title: req.body.title,
-    //             description: req.body.description,
-    //         });
-    //         newTodo.save(function (err, todo) {
-    //             if (!err) {
-    //                 res.status(200).json({ status: "200 OK", success: true, message: "New todo added", });
-    //             } else {
-    //                 res.status(500).json({ status: "500-Internal server error", success: false, message: "Failed to save", });
-    //             }
-    //         });
-    //     }
-    // },
-    add: (req, res) => {
+    landingPage:(req, res,next) => {
+        res.status(200).json({status:'200-OK',message:`This is the home page  , URL = ${req.url}`});
+    },
+    add: (req, res,next) => {
         if (!req.body.title) {
             res.status(400).json({ status: `400-Bad Request`, success: false, message: "Enter the title" });
         } else {
@@ -38,51 +24,47 @@ var functions = {
                     res.status(500).json({ status: "500-Internal server error", success: false, message: "Failed to update", });
                 }
             });
-            // newTodo.save(function (err, todo) {
-            //     if (!err) {
-            //         res.status(200).json({ status: "200 OK", success: true, message: "New todo added", });
-            //     } else {
-            //         res.status(500).json({ status: "500-Internal server error", success: false, message: "Failed to save", });
-            //     }
-            // });
         }
     },
-    delete:(req,res)=>{
+    delete:(req,res,next)=>{
         if(!req.body.title||!req.body.uid){
             res.status(400).send("400-Bad Request");
         }else{
-            User.findOne({uid:req.body.uid},function(err,user){
-                if(!err){
-                    // for(var i=0;i<user.tasks.length;i++)
-                    // {
-                    //     if(user.tasks[i].title==req.body.title)
-                    //     {
-                    //         delete user.tasks[i];
-                    //     }
-                    // }
-                    var val=user.tasks.findIndex(function(element){
-                        element.title===req.body.title
-                    })
-                    //res.send(`${val}`)
-                    user.tasks.splice(val,1);
-                    user.save(function(err,updatedUser){
-                        res.status(200).send(`${user}`);
-                    });                    
-                }else{
-                    throw err;
-                }
-            }); 
+            // User.findOne({uid:req.body.uid},function(err,user){
+            //     if(!err){
+
+            //         var val=user.tasks.findIndex(function(element){
+            //             element.title===req.body.title
+            //         })
+            //         //res.send(`${val}`)
+            //         user.tasks.splice(val,1);
+            //         user.save(function(err,updatedUser){
+            //             res.status(200).send(`${user}`);
+            //         });                    
+            //     }else{
+            //         throw err;
+            //     }
+            // }); 
         }
     },
-    getTodos: (req, res) => {
-        Todo.find((err, docs) => {
-            if (!err) res.status(200).send(docs);
+    getTasks: (req, res,next) => {
+        // Todo.find((err, docs) => {
+        //     if (!err) res.status(200).send(docs);
+        //     else {
+        //         res.status(400).json({ status: "400-Bad Request", message: `${err.message}` });
+        //     }
+        // });
+        User.findOne({
+            uid:req.query.uid,
+        })
+        .then((user)=>{
+            if(!user)res.status(400).send(`No user found  ${err}`);
             else {
-                res.status(400).json({ status: "400-Bad Request", message: `${err.message}` });
+                res.status(200).send(`${user}`);
             }
-        });
+        }).catch(next);
     },
-    register: (req, res) => {
+    register: (req, res,next) => {
         if(!req.body.name||!req.body.email||!req.body.password||!req.body.uid){
             res.status(400).send("Fields must not be empty");
         }else{
@@ -101,13 +83,10 @@ var functions = {
             });
         }
     },
-    login:(req,res)=>{
+    login:(req,res,next)=>{
         User.findOne({
-            name:req.body.name,
-            email:req.body.email,
-            uid:req.body.uid
-        },(err,user)=>{
-            if(err)throw err;
+            uid:req.query.uid
+        }).then((user)=>{
             if(!user){
                 res.status(403).send({success:false,message:"User not found"});
             }
@@ -120,9 +99,9 @@ var functions = {
                      else{
                          return res.status(403).send({success:false,message:"Password does not match"});
                      }
-                })
+                });
             }
-        });
+        }).catch(next);
     },
 }
 
