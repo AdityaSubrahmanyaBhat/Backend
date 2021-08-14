@@ -85,7 +85,7 @@ var functions = {
     },
     login:(req,res,next)=>{
         User.findOne({
-            uid:req.query.uid
+            uid:req.body.uid
         }).then((user)=>{
             if(!user){
                 res.status(403).send({success:false,message:"User not found"});
@@ -94,7 +94,7 @@ var functions = {
                 res.status(200).send(user);
             }
             else{
-                user.comparePassword(req.query.password,function(err,isMatch){
+                user.comparePassword(req.body.password,function(err,isMatch){
                     if(isMatch&&!err){
                         var token=jwt.encode(user,'secret');
                         res.json({success:true,message:"Success",token:token}); 
