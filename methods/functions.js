@@ -14,7 +14,7 @@ var functions = {
                 title: req.body.title,
                 description: req.body.description??"",
             });
-            User.findOne({name:req.body.name},function(err,user){
+            User.findOne({uid:req.body.uid},function(err,user){
                 if(!err){
                     user.tasks.push(newTodo);
                 user.save(function(err,updatedUser){
