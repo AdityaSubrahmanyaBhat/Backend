@@ -12,7 +12,7 @@ router.get('/getTasks',functions.getTasks);
 
 router.post('/register',functions.register);
 
-router.get('/login',functions.login);
+router.post('/login',functions.login);
 
 router.delete('/delete',functions.delete);
 
