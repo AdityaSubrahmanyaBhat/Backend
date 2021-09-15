@@ -48,12 +48,6 @@ var functions = {
         }
     },
     getTasks: (req, res,next) => {
-        // Todo.find((err, docs) => {
-        //     if (!err) res.status(200).send(docs);
-        //     else {
-        //         res.status(400).json({ status: "400-Bad Request", message: `${err.message}` });
-        //     }
-        // });
         User.findOne({
             uid:req.query.uid,
         })
